@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/Logiase/MiraiGo-Template/bot"
-	"github.com/Logiase/MiraiGo-Template/config"
 	"github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
@@ -36,10 +35,6 @@ func (f *fortune) MiraiGoModule() bot.ModuleInfo {
 // 在此处可以进行 Module 的初始化配置
 // 如配置读取
 func (f *fortune) Init() {
-	path := config.GlobalConfig.GetString("aimerneige.fortune")
-	if path == "" {
-		path = "./fortune.yaml"
-	}
 }
 
 // PostInit 第二次初始化
