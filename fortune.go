@@ -46,22 +46,12 @@ func (f *fortune) PostInit() {
 // Serve 注册服务函数部分
 func (f *fortune) Serve(b *bot.Bot) {
 	b.OnGroupMessage(func(c *client.QQClient, msg *message.GroupMessage) {
-		msgString := msg.ToString()
-		runes := []rune(msgString)
-		if len(runes) <= 3 {
-			return
-		}
-		if string(runes[:3]) == "求签 " {
-			things := string(runes[3:])
-			things = strings.TrimSpace(things)
-			if things == "" {
-				return
-			}
-			fortuneResult := drawAFortuneStick(things, msg.Sender.Uin)
-			replyString := fmt.Sprintf("所求事项\"%s\"的求签结果为: %s", things, fortuneResult)
-			replyMessage := message.NewSendingMessage().Append(message.NewText(replyString))
-			b.SendGroupMessage(msg.GroupCode, replyMessage)
-		}
+		reply := getFortuneReply(msg.ToString(), msg.Sender.Uin)
+		c.SendGroupMessage(msg.GroupCode, reply)
+	})
+	b.OnPrivateMessage(func(c *client.QQClient, msg *message.PrivateMessage) {
+		reply := getFortuneReply(msg.ToString(), msg.Sender.Uin)
+		c.SendPrivateMessage(msg.Sender.Uin, reply)
 	})
 }
 
@@ -83,6 +73,25 @@ func (f *fortune) Start(b *bot.Bot) {
 func (f *fortune) Stop(b *bot.Bot, wg *sync.WaitGroup) {
 	// 别忘了解锁
 	defer wg.Done()
+}
+
+func getFortuneReply(msgString string, uin int64) *message.SendingMessage {
+	runes := []rune(msgString)
+	if len(runes) <= 3 {
+		return nil
+	}
+	if string(runes[:3]) == "求签 " {
+		things := string(runes[3:])
+		things = strings.TrimSpace(things)
+		if things == "" {
+			return nil
+		}
+		fortuneResult := drawAFortuneStick(things, uin)
+		replyString := fmt.Sprintf("所求事项\"%s\"的求签结果为: %s", things, fortuneResult)
+		replyMessage := message.NewSendingMessage().Append(message.NewText(replyString))
+		return replyMessage
+	}
+	return nil
 }
 
 func drawAFortuneStick(things string, uin int64) string {
