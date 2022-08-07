@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Logiase/MiraiGo-Template/bot"
+	"github.com/Logiase/MiraiGo-Template/config"
 	"github.com/Logiase/MiraiGo-Template/utils"
 	"github.com/Mrs4s/MiraiGo/client"
 	"github.com/Mrs4s/MiraiGo/message"
@@ -15,6 +16,7 @@ import (
 
 var instance *fortune
 var logger = utils.GetModuleLogger("com.aimerneige.fortune")
+var blacklistUser []int64
 
 type fortune struct {
 }
@@ -35,6 +37,10 @@ func (f *fortune) MiraiGoModule() bot.ModuleInfo {
 // 在此处可以进行 Module 的初始化配置
 // 如配置读取
 func (f *fortune) Init() {
+	blacklistUserSlice := config.GlobalConfig.GetIntSlice("aimerneige.fortune.blacklist")
+	for _, user := range blacklistUserSlice {
+		blacklistUser = append(blacklistUser, int64(user))
+	}
 }
 
 // PostInit 第二次初始化
@@ -87,6 +93,9 @@ func getFortuneReply(msgString string, uin int64) *message.SendingMessage {
 			return nil
 		}
 		fortuneResult := drawAFortuneStick(things, uin)
+		if inBlacklist(uin) {
+			fortuneResult = "大凶"
+		}
 		replyString := fmt.Sprintf("所求事项\"%s\"的求签结果为: %s", things, fortuneResult)
 		replyMessage := message.NewSendingMessage().Append(message.NewText(replyString))
 		return replyMessage
@@ -146,4 +155,13 @@ func stringHash(s string) uint32 {
 	h := fnv.New32a()
 	h.Write([]byte(s))
 	return h.Sum32()
+}
+
+func inBlacklist(userID int64) bool {
+	for _, v := range blacklistUser {
+		if userID == v {
+			return true
+		}
+	}
+	return false
 }
