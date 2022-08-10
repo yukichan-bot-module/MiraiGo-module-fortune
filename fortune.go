@@ -43,8 +43,8 @@ func (f *fortune) Init() {
 		blacklistUser = append(blacklistUser, int64(user))
 	}
 	disallowedSlice := config.GlobalConfig.GetIntSlice("aimerneige.fortune.disallowed")
-	for _, groupCode := range disallowedList {
-		disallowedSlice = append(disallowedSlice, int(groupCode))
+	for _, groupCode := range disallowedSlice {
+		disallowedList = append(disallowedList, int64(groupCode))
 	}
 }
 
