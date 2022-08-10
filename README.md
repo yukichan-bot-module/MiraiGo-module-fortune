@@ -26,6 +26,18 @@ imports (
 // ...
 ```
 
+在全局配置文件中写入配置
+
+```yaml
+aimerneige:
+  fortune:
+    blacklist: # 黑名单用户
+      - 1781924496
+      - 2802340025
+    disallowed: # 关闭功能的群
+      - 546362685
+```
+
 ## LICENSE
 
 <a href="https://www.gnu.org/licenses/agpl-3.0.en.html">

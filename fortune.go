@@ -17,6 +17,7 @@ import (
 var instance *fortune
 var logger = utils.GetModuleLogger("com.aimerneige.fortune")
 var blacklistUser []int64
+var disallowedList []int64
 
 type fortune struct {
 }
@@ -41,6 +42,10 @@ func (f *fortune) Init() {
 	for _, user := range blacklistUserSlice {
 		blacklistUser = append(blacklistUser, int64(user))
 	}
+	disallowedSlice := config.GlobalConfig.GetIntSlice("aimerneige.fortune.disallowed")
+	for _, groupCode := range disallowedList {
+		disallowedSlice = append(disallowedSlice, int(groupCode))
+	}
 }
 
 // PostInit 第二次初始化
@@ -52,6 +57,9 @@ func (f *fortune) PostInit() {
 // Serve 注册服务函数部分
 func (f *fortune) Serve(b *bot.Bot) {
 	b.OnGroupMessage(func(c *client.QQClient, msg *message.GroupMessage) {
+		if isDisallowed(msg.GroupCode) {
+			return
+		}
 		reply := getFortuneReply(msg.ToString(), msg.Sender.Uin)
 		c.SendGroupMessage(msg.GroupCode, reply)
 	})
@@ -160,6 +168,15 @@ func stringHash(s string) uint32 {
 func inBlacklist(userID int64) bool {
 	for _, v := range blacklistUser {
 		if userID == v {
+			return true
+		}
+	}
+	return false
+}
+
+func isDisallowed(groupCode int64) bool {
+	for _, v := range disallowedList {
+		if groupCode == v {
 			return true
 		}
 	}
