@@ -2,13 +2,15 @@ module github.com/yukichan-bot-module/MiraiGo-module-fortune
 
 go 1.17
 
-require github.com/Logiase/MiraiGo-Template v0.0.0-20220412065005-27063e73adf8
+require (
+	github.com/Logiase/MiraiGo-Template v0.0.0-20220412065005-27063e73adf8
+	github.com/Mrs4s/MiraiGo v0.0.0-20211225150059-9946b404aea3
+)
 
 require (
 	cloud.google.com/go v0.99.0 // indirect
 	cloud.google.com/go/storage v1.18.2 // indirect
 	github.com/Baozisoftware/qrcode-terminal-go v0.0.0-20170407111555-c0650d8dff0f // indirect
-	github.com/Mrs4s/MiraiGo v0.0.0-20211225150059-9946b404aea3 // indirect
 	github.com/RomiChan/protobuf v0.0.0-20211223055824-048df49a8956 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
