@@ -61,10 +61,16 @@ func (f *fortune) Serve(b *bot.Bot) {
 			return
 		}
 		reply := getFortuneReply(msg.ToString(), msg.Sender.Uin)
+		if reply == nil {
+			return
+		}
 		c.SendGroupMessage(msg.GroupCode, reply)
 	})
 	b.OnPrivateMessage(func(c *client.QQClient, msg *message.PrivateMessage) {
 		reply := getFortuneReply(msg.ToString(), msg.Sender.Uin)
+		if reply == nil {
+			return
+		}
 		c.SendPrivateMessage(msg.Sender.Uin, reply)
 	})
 }
