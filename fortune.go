@@ -56,7 +56,7 @@ func (f *fortune) PostInit() {
 
 // Serve 注册服务函数部分
 func (f *fortune) Serve(b *bot.Bot) {
-	b.OnGroupMessage(func(c *client.QQClient, msg *message.GroupMessage) {
+	b.GroupMessageEvent.Subscribe(func(c *client.QQClient, msg *message.GroupMessage) {
 		if isDisallowed(msg.GroupCode) {
 			return
 		}
@@ -66,7 +66,7 @@ func (f *fortune) Serve(b *bot.Bot) {
 		}
 		c.SendGroupMessage(msg.GroupCode, reply)
 	})
-	b.OnPrivateMessage(func(c *client.QQClient, msg *message.PrivateMessage) {
+	b.PrivateMessageEvent.Subscribe(func(c *client.QQClient, msg *message.PrivateMessage) {
 		reply := getFortuneReply(msg.ToString(), msg.Sender.Uin)
 		if reply == nil {
 			return
